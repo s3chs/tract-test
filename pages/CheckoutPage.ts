@@ -70,7 +70,7 @@ export class CheckoutPage extends BasePage {
         return this.page.locator('span.title', {hasText: 'Discount (Get flat 20% off on all products)'});
     }
 
-    get discountAmountLocator() {
+    get discountAmount() {
         return this.page.locator('tr:has-text("Discount (Get flat 20% off on all products)") td.amount');
     }
 
@@ -95,7 +95,7 @@ export class CheckoutPage extends BasePage {
         await this.phoneInput.fill(data.phone);
     }
 
-    async waitForLoaderToAppearAndDisappear(bufferMs: number = 1000) {
+    async waitForLoaderToAppearAndDisappear(bufferMs: number = 2500) {
         try {
             await this.shippingLoaderMask.waitFor({state: 'visible', timeout: 5000});
         } catch {
@@ -131,7 +131,7 @@ export class CheckoutPage extends BasePage {
     }
 
     async getDiscountAmount(): Promise<number> {
-        const discountText = await this.discountAmountLocator.textContent();
+        const discountText = await this.discountAmount.textContent();
         if (!discountText) return 0;
         const cleaned = discountText.trim().replace('-$', '').replace('$', '');
         return parseFloat(cleaned);
@@ -154,9 +154,13 @@ export class CheckoutPage extends BasePage {
         expect(actualDiscount).toBeCloseTo(expectedDiscount, 2);
     }
 
-    async expectSubtotalToMatch(expectedSubtotal: number) {
-        const actualSubtotal = await this.getCartSubtotal();
-        expect(actualSubtotal).toBeCloseTo(expectedSubtotal, 2);
+    async getCalculatedSubtotal(): Promise<number> {
+        const total = await this.getOrderTotal();
+        const shipping = await this.getShippingFee();
+        const discount = await this.getDiscountAmount();
+        const subtotal = total - shipping + discount;
+
+        return parseFloat(subtotal.toFixed(2));
     }
 
     async expectTotalToBeCorrect() {
@@ -167,6 +171,12 @@ export class CheckoutPage extends BasePage {
         const actualTotal = await this.getOrderTotal();
 
         expect(actualTotal).toBeCloseTo(expectedTotal, 2);
+    }
+
+    async getOrderTotalWithoutShipping(): Promise<number> {
+        const total = await this.getOrderTotal();
+        const shipping = await this.getShippingFee();
+        return parseFloat((total - shipping).toFixed(2));
     }
 
 }

@@ -5,7 +5,7 @@ export class CartPage extends BasePage {
 
     // Locators
 
-    get orderTotalLocator() {
+    get orderTotal() {
         return this.page.locator('td.amount[data-th="Order Total"] span.price');
     }
 
@@ -28,7 +28,7 @@ export class CartPage extends BasePage {
     // Actions
 
     async getOrderTotal(): Promise<number> {
-        const priceStr = await this.orderTotalLocator.textContent();
+        const priceStr = await this.orderTotal.textContent();
         if (!priceStr) throw new Error('Order total not found');
         const cleaned = priceStr.trim().replace('$', '');
         return parseFloat(cleaned);
@@ -51,7 +51,7 @@ export class CartPage extends BasePage {
 
         const expectedTotal = this.calculateDiscountedPrice(originalTotal, expectedDiscountPercent);
 
-        const discountedPriceStr = await this.orderTotalLocator.textContent();
+        const discountedPriceStr = await this.orderTotal.textContent();
         if (!discountedPriceStr) throw new Error('Discounted total not found');
         const cleaned = discountedPriceStr.trim().replace('$', '');
         const displayedDiscountedPrice = parseFloat(cleaned);

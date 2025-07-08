@@ -50,10 +50,6 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
     // Click the 'Next' button to proceed in the checkout flow
     await checkoutPage.clickNextButton();
 
-    // Get and log the subtotal before applying any coupons
-    const subtotalBeforeDiscount = await checkoutPage.getCartSubtotal();
-    console.log('Subtotal before discount:', subtotalBeforeDiscount);
-
     // Apply a coupon code to the order
     await checkoutPage.applyCoupon("20poff");
 
