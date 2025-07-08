@@ -19,10 +19,6 @@ export class CategoryPage extends BasePage {
         return this.page.locator('div.filter-options-title', { hasText: filterName });
     }
 
-    get filterContent() {
-        return this.page.locator('.filter-options-content');
-    }
-
     // Actions
 
     async goTo() {
@@ -35,23 +31,35 @@ export class CategoryPage extends BasePage {
     }
 
     async applyFilter(filterName: string, value: string) {
-        await this.filterTab(filterName).click();
+        const tab = this.filterTab(filterName);
+        await tab.click();
+
+        // Cibler le conteneur associé à ce filtre uniquement
+        const filterBlock = tab.locator('..').locator('.filter-options-content');
 
         switch (filterName.toLowerCase()) {
             case 'color':
-                await this.applyColorFilter(this.filterContent, value);
+                await this.applyColorFilter(filterBlock, value);
                 break;
             case 'price':
-                await this.applyPriceFilter(this.filterContent, value);
+                await this.applyPriceFilter(filterBlock, value);
+                break;
+            case 'eco collection':
+                await this.applyEcoCollectionFilter(filterBlock, value);
                 break;
             default:
-                await this.applyTextFilter(this.filterContent, value);
+                await this.applyTextFilter(filterBlock, value);
         }
     }
 
     async applyTextFilter(filterContent: Locator, value: string) {
-        const option = filterContent.locator(`:scope :text("${value}")`).first();
-        if (await option.count() === 0) throw new Error(`Text filter "${value}" not found`);
+        const option = filterContent.locator(`[option-label="${value}"]`).first();
+
+        if (await option.count() === 0) {
+            throw new Error(`Text filter "${value}" not found`);
+        }
+
+        await expect(option).toBeVisible({ timeout: 5000 });
         await option.click();
     }
 
@@ -86,10 +94,24 @@ export class CategoryPage extends BasePage {
         throw new Error(`Price filter "${value}" not found`);
     }
 
+    async applyEcoCollectionFilter(filterContent: Locator, value: string) {
+        const option = filterContent.locator(`a:has-text("${value}")`).first();
+        if (await option.count() === 0) {
+            throw new Error(`Eco Collection option "${value}" not found`);
+        }
+        await option.click();
+    }
+
     async expectUrlToContainParams(params: string[]) {
         const url = this.page.url();
         for (const param of params) {
             expect(url).toContain(param);
         }
     }
+
+    async selectProductByName(productName: string) {
+        const productLink = this.page.locator('.product-item-link', { hasText: productName }).first();
+        await productLink.click();
+    }
+
 }

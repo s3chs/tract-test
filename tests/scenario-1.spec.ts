@@ -4,7 +4,7 @@ import {ProductPage} from "../pages/ProductPage";
 import {CheckoutPage} from "../pages/CheckoutPage";
 import {validCustomerNetherlands} from "../data/customerData";
 
-test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({page}) => {
+test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
 
     // Instantiate the CategoryPage with the direct category URL path
     const categoryPage = new CategoryPage(page, 'men/tops-men/jackets-men');
@@ -26,9 +26,6 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({page}) => {
 
     // Instantiate the ProductPage now that we are on the product detail page
     const productPage = new ProductPage(page);
-
-    // Verify the URL contains the expected product slug (commented out)
-    // await expect(page).toHaveURL(/proteus-fitness-jackshirt/);
 
     // Choose product options and add the product to the cart
     await productPage.selectAttributes("XS", "Blue");

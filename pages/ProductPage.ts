@@ -12,12 +12,16 @@ export class ProductPage extends BasePage {
         return this.page.getByRole('button', { name: 'Add to Cart' });
     }
 
-    get sizeOptions() {
-        return this.page.locator('[option-label]');
-    }
-
     get quantityInput() {
         return this.page.locator('input#qty');
+    }
+
+    get sizeIsRequiredErrorMessage() {
+        return this.page.locator('div.mage-error[for="super_attribute[143]"]');
+    }
+
+    get colorIsRequiredErrorMessage() {
+        return this.page.locator('div.mage-error[for="super_attribute[93]"]');
     }
 
     // Actions
@@ -37,5 +41,10 @@ export class ProductPage extends BasePage {
 
     async expectSuccessMessagetoBeVisible() {
         await expect(this.successMessage).toBeVisible();
+    }
+
+    async verifyRequiredFieldErrors() {
+        await expect(this.sizeIsRequiredErrorMessage).toBeVisible();
+        await expect(this.colorIsRequiredErrorMessage).toBeVisible();
     }
 }

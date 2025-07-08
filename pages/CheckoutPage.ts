@@ -154,6 +154,11 @@ export class CheckoutPage extends BasePage {
         expect(actualDiscount).toBeCloseTo(expectedDiscount, 2);
     }
 
+    async expectSubtotalToMatch(expectedSubtotal: number) {
+        const actualSubtotal = await this.getCartSubtotal();
+        expect(actualSubtotal).toBeCloseTo(expectedSubtotal, 2);
+    }
+
     async expectTotalToBeCorrect() {
         const subtotal = await this.getCartSubtotal();
         const discount = await this.getDiscountAmount();
