@@ -17,10 +17,10 @@ test('Scenario 2 – Women > Tops > Jackets > Medium > Red', async ({page}) => {
     await categoryPage.handlePopupIfPresent();
 
     // Apply filters
-    // await categoryPage.applyFilter('Size', 'M');
-    // await categoryPage.applyFilter('Color', 'Red');
+    await categoryPage.applyFilter('Size', 'M');
+    await categoryPage.applyFilter('Color', 'Red');
     await categoryPage.applyFilter('Eco Collection', 'Yes');
-    // await categoryPage.expectUrlToContainParams(['size=168', 'color=58', 'eco_collection=1']);
+    await categoryPage.expectUrlToContainParams(['size=168', 'color=58', 'eco_collection=1']);
 
     // Select a product on the category page by its name
     await categoryPage.selectProductByName('Stellar Solar Jacket');
