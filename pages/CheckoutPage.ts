@@ -66,7 +66,7 @@ export class CheckoutPage extends BasePage {
         return this.page.locator('button[value="Apply Discount"]');
     }
 
-    get discountCouponMessage() {
+    get discountCodeMessage() {
         return this.page.locator('span.title', {hasText: 'Discount (Get flat 20% off on all products)'});
     }
 
@@ -137,7 +137,7 @@ export class CheckoutPage extends BasePage {
         return parseFloat(cleaned);
     }
 
-    async applyCoupon(code: string) {
+    async applyDiscountCode(code: string) {
         await this.discountBlock.click();
         await this.discountCodeInput.fill('');
         await this.discountCodeInput.type(code);
@@ -145,22 +145,13 @@ export class CheckoutPage extends BasePage {
     }
 
     async expectDiscountToBeApplied(expectedDiscountPercent: number) {
-        await expect(this.discountCouponMessage).toBeVisible();
+        await expect(this.discountCodeMessage).toBeVisible();
 
         const subtotal = await this.getCartSubtotal();
         const expectedDiscount = parseFloat((subtotal * (expectedDiscountPercent / 100)).toFixed(2));
         const actualDiscount = await this.getDiscountAmount();
 
         expect(actualDiscount).toBeCloseTo(expectedDiscount, 2);
-    }
-
-    async getCalculatedSubtotal(): Promise<number> {
-        const total = await this.getOrderTotal();
-        const shipping = await this.getShippingFee();
-        const discount = await this.getDiscountAmount();
-        const subtotal = total - shipping + discount;
-
-        return parseFloat(subtotal.toFixed(2));
     }
 
     async expectTotalToBeCorrect() {

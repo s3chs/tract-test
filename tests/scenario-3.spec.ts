@@ -4,10 +4,10 @@ import {ProductPage} from "../pages/ProductPage";
 import {CheckoutPage} from "../pages/CheckoutPage";
 import {validCustomerNetherlands} from "../data/customerData";
 
-test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
+test('Scenario 3 – Gear > Bags > Activity > Yoga', async ({ page }) => {
 
     // Instantiate the CategoryPage with the direct category URL path
-    const categoryPage = new CategoryPage(page, 'men/tops-men/jackets-men');
+    const categoryPage = new CategoryPage(page, 'gear/bags');
 
     // Navigate directly to the category page
     await categoryPage.goTo();
@@ -16,20 +16,16 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
     await categoryPage.handlePopupIfPresent();
 
     // Apply filters
-    await categoryPage.applyFilter('Size', 'XS');
-    await categoryPage.applyFilter('Color', 'Blue');
-    await categoryPage.applyFilter("Price", "$40.00 - $49.99");
-    await categoryPage.expectUrlToContainParams(['size=166', 'color=50', 'price=40-50']);
+    await categoryPage.applyFilter('Activity', 'Yoga');
+    await categoryPage.expectUrlToContainParams(['activity=8']);
 
     // Select the first visible product on the category page
-    await categoryPage.selectFirstVisibleProduct();
+    await categoryPage.selectRandomVisibleProduct();
 
     // Instantiate the ProductPage now that we are on the product detail page
     const productPage = new ProductPage(page);
 
-    // Choose product options and add the product to the cart
-    await productPage.selectAttributes("XS", "Blue");
-    await productPage.setQuantity(2);
+    // Add the product to the cart
     await productPage.addToCart();
 
     // Verify the success message is visible after adding to cart

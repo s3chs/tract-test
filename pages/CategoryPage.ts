@@ -53,7 +53,11 @@ export class CategoryPage extends BasePage {
     }
 
     async applyTextFilter(filterContent: Locator, value: string) {
-        const option = filterContent.locator(`[option-label="${value}"]`).first();
+        let option = filterContent.locator(`[option-label="${value}"]`).first();
+
+        if (await option.count() === 0) {
+            option = filterContent.locator(`a:has-text("${value}")`).first();
+        }
 
         if (await option.count() === 0) {
             throw new Error(`Text filter "${value}" not found`);
@@ -113,5 +117,21 @@ export class CategoryPage extends BasePage {
         const productLink = this.page.locator('.product-item-link', { hasText: productName }).first();
         await productLink.click();
     }
+
+    async selectRandomVisibleProduct() {
+        const productItems = this.page.locator('.product-item');
+        const count = await productItems.count();
+
+        if (count === 0) {
+            throw new Error('Aucun produit trouvé sur la page, Ducon ne peut rien cliquer.');
+        }
+
+        const randomIndex = Math.floor(Math.random() * count);
+        const randomProduct = productItems.nth(randomIndex);
+
+        await expect(randomProduct).toBeVisible({ timeout: 5000 });
+        await randomProduct.click();
+    }
+
 
 }
