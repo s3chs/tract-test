@@ -34,8 +34,12 @@ export class BasePage {
 
     // Actions
 
-    async navigateToHome() {
+    async navigateToHomePage() {
         await this.page.goto(this.baseURL);
+    }
+
+    async navigateToCheckoutPage() {
+        await this.page.goto(this.baseURL+"/checkout");
     }
 
     async navigateToSection(mainSection: MainSection, subSection?: SubSection, finalSection?: FinalSection) {
@@ -57,15 +61,9 @@ export class BasePage {
         }
     }
 
-    async navigateToCartPage() {
-        await this.cartSummaryButton.click();
-        await this.cartPageRedirectionButton.waitFor({ state: 'visible', timeout: 5000 });
-        await this.cartPageRedirectionButton.click();
-    }
-
-    async navigateToCheckoutPage() {
-        await this.cartSummaryButton.click();
-        await this.checkoutPageRedirectionButton.waitFor({ state: 'visible', timeout: 5000 });
-        await this.checkoutPageRedirectionButton.click();
-    }
+    // async navigateToCheckoutPage() {
+    //     await this.cartSummaryButton.click();
+    //     await this.checkoutPageRedirectionButton.waitFor({ state: 'visible', timeout: 5000 });
+    //     await this.checkoutPageRedirectionButton.click();
+    // }
 }

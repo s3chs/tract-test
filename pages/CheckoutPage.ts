@@ -1,13 +1,12 @@
-import {BasePage} from './BasePage';
-import {expect} from '@playwright/test';
-import {CustomerInfo} from "../types/CustomerInfo";
+import { BasePage } from './BasePage';
+import { CustomerInfo } from "../types/CustomerInfo";
 
 export class CheckoutPage extends BasePage {
 
     // Locators
 
     get emailInput() {
-        return this.page.locator('input[name="username"]'); // Email
+        return this.page.locator('#customer-email:visible');
     }
 
     get firstNameInput() {
@@ -38,6 +37,14 @@ export class CheckoutPage extends BasePage {
         return this.page.locator('input[name="telephone"]');
     }
 
+    get nextStepButton() {
+        return this.page.locator('button[data-role="opc-continue"]');
+    }
+
+    get shippingLoaderMask() {
+        return this.page.locator('#opc-shipping_method > .loading-mask');
+    }
+
     // Actions
 
     async fillCustomerInformation(data: CustomerInfo) {
@@ -49,6 +56,22 @@ export class CheckoutPage extends BasePage {
         await this.postcodeInput.fill(data.postcode);
         await this.countrySelect.selectOption({ label: data.country });
         await this.phoneInput.fill(data.phone);
+    }
+
+    async waitForLoaderToAppearAndDisappear(bufferMs: number = 1000) {
+        try {
+            await this.shippingLoaderMask.waitFor({ state: 'visible', timeout: 5000 });
+        } catch {
+            return;
+        }
+
+        await this.shippingLoaderMask.waitFor({ state: 'hidden', timeout: 10000 });
+
+        await this.page.waitForTimeout(bufferMs);
+    }
+
+    async clickNextButton() {
+        await this.nextStepButton.click();
     }
 
 }

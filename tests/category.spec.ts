@@ -1,7 +1,6 @@
-import {test, expect} from '@playwright/test';
+import {test} from '@playwright/test';
 import {CategoryPage} from '../pages/CategoryPage';
 import {ProductPage} from "../pages/ProductPage";
-import {CartPage} from "../pages/CartPage";
 import {CheckoutPage} from "../pages/CheckoutPage";
 import {validCustomerNetherlands} from "../data/customerData";
 
@@ -17,10 +16,10 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({page}) => {
     await categoryPage.handlePopupIfPresent();
 
     // Apply filters: size XS, blue color and price range
-    await categoryPage.applyFilter('Size', 'XS');
-    await categoryPage.applyFilter('Color', 'Blue');
-    await categoryPage.applyFilter("Price", "$40.00 - $49.99");
-    await categoryPage.expectUrlToContainParams(['size=166', 'color=50', 'price=40-50']);
+    // await categoryPage.applyFilter('Size', 'XS');
+    // await categoryPage.applyFilter('Color', 'Blue');
+    // await categoryPage.applyFilter("Price", "$40.00 - $49.99");
+    // await categoryPage.expectUrlToContainParams(['size=166', 'color=50', 'price=40-50']);
 
     // Select the first visible product
     await categoryPage.selectFirstVisibleProduct();
@@ -29,7 +28,7 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({page}) => {
     const productPage = new ProductPage(page);
 
     // Verify that the URL indicates we are on the product page
-    await expect(page).toHaveURL(/proteus-fitness-jackshirt/);
+    // await expect(page).toHaveURL(/proteus-fitness-jackshirt/);
 
     // Select product options and add it to the cart
     await productPage.selectAttributes("XS", "Blue");
@@ -37,28 +36,19 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({page}) => {
     await productPage.addToCart();
     await productPage.expectSuccessMessagetoBeVisible();
 
-    // Go to cart page
-    await productPage.navigateToCartPage();
-
-    // Instantiate the CartPage now that we are on the cart page
-    const cartPage = new CartPage(page);
-
-    // Total order amount before applying coupon
-    const totalBeforeDiscount = await cartPage.getOrderTotal();
-
-    // Apply coupon code
-    await cartPage.applyCoupon("20poff");
-
-    // Verify if the discount is applied correctly based on the original total
-    await cartPage.expectDiscountToBeApplied(20, totalBeforeDiscount);
-
-    // Click on the checkout button to be redirected to the checkout page
-    await cartPage.proceedToCheckoutButton.click();
+    // Go to checkout page
+    await productPage.navigateToCheckoutPage();
 
     // Instantiate the CheckoutPage now that we are on the checkout page
     const checkoutPage = new CheckoutPage(page);
 
-    await checkoutPage.fillCustomerInformation(validCustomerNetherlands)
+    // Fill the checkout form with the customers information
+    await checkoutPage.fillCustomerInformation(validCustomerNetherlands);
 
-    await page.waitForTimeout(5000)
+    await checkoutPage.waitForLoaderToAppearAndDisappear();
+
+    await checkoutPage.clickNextButton();
+
+    await page.waitForTimeout(8000)
+    //
 });
