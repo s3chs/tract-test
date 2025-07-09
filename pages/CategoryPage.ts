@@ -1,5 +1,6 @@
-import { expect, Locator, Page } from '@playwright/test';
-import { BasePage } from './BasePage';
+import {expect, Locator, Page} from '@playwright/test';
+import {BasePage} from './BasePage';
+import {ProductFilters} from "../types/ProductTypes";
 
 export class CategoryPage extends BasePage {
     readonly categoryPath: string;
@@ -16,7 +17,7 @@ export class CategoryPage extends BasePage {
     }
 
     filterTab(filterName: string) {
-        return this.page.locator('div.filter-options-title', { hasText: filterName });
+        return this.page.locator('div.filter-options-title', {hasText: filterName});
     }
 
     // Actions
@@ -30,11 +31,32 @@ export class CategoryPage extends BasePage {
         await this.firstVisibleProduct.click();
     }
 
+    async applyFilters(filters: ProductFilters) {
+        if (filters.size) {
+            await this.applyFilter('Size', filters.size);
+        }
+
+        if (filters.color) {
+            await this.applyFilter('Color', filters.color);
+        }
+
+        if (filters.price) {
+            await this.applyFilter('Price', filters.price);
+        }
+
+        if (filters.ecoCollection) {
+            await this.applyFilter('Eco Collection', filters.ecoCollection);
+        }
+
+        if (filters.activity) {
+            await this.applyFilter('Activity', filters.activity);
+        }
+    }
+
     async applyFilter(filterName: string, value: string) {
         const tab = this.filterTab(filterName);
         await tab.click();
 
-        // Cibler le conteneur associé à ce filtre uniquement
         const filterBlock = tab.locator('..').locator('.filter-options-content');
 
         switch (filterName.toLowerCase()) {
@@ -63,7 +85,7 @@ export class CategoryPage extends BasePage {
             throw new Error(`Text filter "${value}" not found`);
         }
 
-        await expect(option).toBeVisible({ timeout: 5000 });
+        await expect(option).toBeVisible({timeout: 5000});
         await option.click();
     }
 
@@ -114,7 +136,7 @@ export class CategoryPage extends BasePage {
     }
 
     async selectProductByName(productName: string) {
-        const productLink = this.page.locator('.product-item-link', { hasText: productName }).first();
+        const productLink = this.page.locator('.product-item-link', {hasText: productName}).first();
         await productLink.click();
     }
 
@@ -129,7 +151,7 @@ export class CategoryPage extends BasePage {
         const randomIndex = Math.floor(Math.random() * count);
         const randomProduct = productItems.nth(randomIndex);
 
-        await expect(randomProduct).toBeVisible({ timeout: 5000 });
+        await expect(randomProduct).toBeVisible({timeout: 5000});
         await randomProduct.click();
     }
 

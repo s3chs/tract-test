@@ -3,11 +3,12 @@ import {CategoryPage} from '../pages/CategoryPage';
 import {ProductPage} from "../pages/ProductPage";
 import {CheckoutPage} from "../pages/CheckoutPage";
 import {validCustomerNetherlands} from "../data/customerData";
+import {scenario3} from "../data/productScenarios";
 
 test('Scenario 3 – Gear > Bags > Activity > Yoga', async ({ page }) => {
 
     // Instantiate the CategoryPage with the direct category URL path
-    const categoryPage = new CategoryPage(page, 'gear/bags');
+    const categoryPage = new CategoryPage(page, scenario3.categoryPath);
 
     // Navigate directly to the category page
     await categoryPage.goTo();
@@ -16,8 +17,8 @@ test('Scenario 3 – Gear > Bags > Activity > Yoga', async ({ page }) => {
     await categoryPage.handlePopupIfPresent();
 
     // Apply filters
-    await categoryPage.applyFilter('Activity', 'Yoga');
-    await categoryPage.expectUrlToContainParams(['activity=8']);
+    await categoryPage.applyFilters(scenario3.filters);
+    await categoryPage.expectUrlToContainParams(scenario3.expectedUrlParams);
 
     // Select the first visible product on the category page
     await categoryPage.selectRandomVisibleProduct();
@@ -29,7 +30,7 @@ test('Scenario 3 – Gear > Bags > Activity > Yoga', async ({ page }) => {
     await productPage.addToCart();
 
     // Verify the success message is visible after adding to cart
-    await productPage.expectSuccessMessagetoBeVisible();
+    await productPage.expectSuccessMessageToBeVisible();
 
     // Navigate to the checkout page
     await productPage.navigateToCheckoutPage();
@@ -47,7 +48,7 @@ test('Scenario 3 – Gear > Bags > Activity > Yoga', async ({ page }) => {
     await checkoutPage.clickNextButton();
 
     // Apply a coupon code to the order
-    await checkoutPage.applyDiscountCode("20poff");
+    await checkoutPage.applyDiscountCode(scenario3.coupon);
 
     // Verify that a 20% discount is applied
     await checkoutPage.expectDiscountToBeApplied(20);

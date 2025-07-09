@@ -1,13 +1,14 @@
-import {test} from '@playwright/test';
-import {CategoryPage} from '../pages/CategoryPage';
-import {ProductPage} from "../pages/ProductPage";
-import {CheckoutPage} from "../pages/CheckoutPage";
-import {validCustomerNetherlands} from "../data/customerData";
+import { test } from '@playwright/test';
+import { CategoryPage } from '../pages/CategoryPage';
+import { ProductPage } from '../pages/ProductPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
+import { validCustomerNetherlands } from '../data/customerData';
+import { scenario1 } from '../data/productScenarios';
 
 test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
 
     // Instantiate the CategoryPage with the direct category URL path
-    const categoryPage = new CategoryPage(page, 'men/tops-men/jackets-men');
+    const categoryPage = new CategoryPage(page, scenario1.categoryPath);
 
     // Navigate directly to the category page
     await categoryPage.goTo();
@@ -16,10 +17,8 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
     await categoryPage.handlePopupIfPresent();
 
     // Apply filters
-    await categoryPage.applyFilter('Size', 'XS');
-    await categoryPage.applyFilter('Color', 'Blue');
-    await categoryPage.applyFilter("Price", "$40.00 - $49.99");
-    await categoryPage.expectUrlToContainParams(['size=166', 'color=50', 'price=40-50']);
+    await categoryPage.applyFilters(scenario1.filters);
+    await categoryPage.expectUrlToContainParams(scenario1.expectedUrlParams);
 
     // Select the first visible product on the category page
     await categoryPage.selectFirstVisibleProduct();
@@ -28,12 +27,12 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
     const productPage = new ProductPage(page);
 
     // Choose product options and add the product to the cart
-    await productPage.selectAttributes("XS", "Blue");
-    await productPage.setQuantity(2);
+    await productPage.selectAttributes(scenario1.attributes);
+    await productPage.setQuantity(scenario1.quantity ?? 1);
     await productPage.addToCart();
 
     // Verify the success message is visible after adding to cart
-    await productPage.expectSuccessMessagetoBeVisible();
+    await productPage.expectSuccessMessageToBeVisible();
 
     // Navigate to the checkout page
     await productPage.navigateToCheckoutPage();
@@ -50,8 +49,8 @@ test('Scenario 1 – Men > Tops > Jackets > XS > Blue', async ({ page }) => {
     // Click the 'Next' button to proceed in the checkout flow
     await checkoutPage.clickNextButton();
 
-    // Apply a coupon code to the order
-    await checkoutPage.applyDiscountCode("20poff");
+    // Apply a discount code to the order
+    await checkoutPage.applyDiscountCode(scenario1.coupon);
 
     // Verify that a 20% discount is applied
     await checkoutPage.expectDiscountToBeApplied(20);

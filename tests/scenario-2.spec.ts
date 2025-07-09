@@ -1,14 +1,15 @@
-import {expect, test} from '@playwright/test';
-import {CategoryPage} from '../pages/CategoryPage';
-import {ProductPage} from "../pages/ProductPage";
-import {CheckoutPage} from "../pages/CheckoutPage";
-import {validCustomerNetherlands} from "../data/customerData";
-import {CartPage} from "../pages/CartPage";
+import { test, expect } from '@playwright/test';
+import { CategoryPage } from '../pages/CategoryPage';
+import { ProductPage } from '../pages/ProductPage';
+import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
+import { validCustomerNetherlands } from '../data/customerData';
+import {scenario1, scenario2} from '../data/productScenarios';
 
 test('Scenario 2 – Women > Tops > Jackets > Medium > Red', async ({page}) => {
 
     // Instantiate the CategoryPage with the direct category URL path
-    const categoryPage = new CategoryPage(page, 'women/tops-women/jackets-women');
+    const categoryPage = new CategoryPage(page, scenario2.categoryPath);
 
     // Navigate directly to the category page
     await categoryPage.goTo();
@@ -17,13 +18,11 @@ test('Scenario 2 – Women > Tops > Jackets > Medium > Red', async ({page}) => {
     await categoryPage.handlePopupIfPresent();
 
     // Apply filters
-    await categoryPage.applyFilter('Size', 'M');
-    await categoryPage.applyFilter('Color', 'Red');
-    await categoryPage.applyFilter('Eco Collection', 'Yes');
-    await categoryPage.expectUrlToContainParams(['size=168', 'color=58', 'eco_collection=1']);
+    await categoryPage.applyFilters(scenario2.filters);
+    await categoryPage.expectUrlToContainParams(scenario2.expectedUrlParams);
 
     // Select a product on the category page by its name
-    await categoryPage.selectProductByName('Stellar Solar Jacket');
+    await categoryPage.selectProductByName(scenario2.productName);
 
     // Instantiate the ProductPage now that we are on the product detail page
     const productPage = new ProductPage(page);
@@ -33,12 +32,12 @@ test('Scenario 2 – Women > Tops > Jackets > Medium > Red', async ({page}) => {
     await productPage.verifyRequiredFieldErrors();
 
     // Choose product options and add the product to the cart
-    await productPage.selectAttributes("M", "Red");
+    await productPage.selectAttributes(scenario2.attributes);
     await productPage.setQuantity(4);
     await productPage.addToCart();
 
     // Verify the success message is visible after adding to cart
-    await productPage.expectSuccessMessagetoBeVisible();
+    await productPage.expectSuccessMessageToBeVisible();
 
     // Go to cart page
     await productPage.navigateToCartPage();
@@ -50,7 +49,7 @@ test('Scenario 2 – Women > Tops > Jackets > Medium > Red', async ({page}) => {
     const totalBeforeDiscount = await cartPage.getOrderTotal();
 
     // Apply discount code
-    await cartPage.applyDiscount("20poff");
+    await cartPage.applyDiscount(scenario2.coupon);
 
     // Verify if the discount is applied correctly based on the original total, and store the total amount
     await cartPage.expectDiscountToBeApplied(20, totalBeforeDiscount);

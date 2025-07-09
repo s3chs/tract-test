@@ -1,5 +1,6 @@
 import { BasePage } from './BasePage';
 import { expect } from '@playwright/test';
+import {ProductAttributes} from "../types/ProductTypes";
 
 export class ProductPage extends BasePage {
 
@@ -25,9 +26,15 @@ export class ProductPage extends BasePage {
     }
 
     // Actions
-    async selectAttributes(size: string, color: string) {
-        await this.page.locator(`[option-label="${size}"]`).click();
-        await this.page.locator(`[option-label="${color}"]`).click();
+
+    async selectAttributes(attributes: ProductAttributes) {
+        if (attributes.size) {
+            await this.page.locator(`[option-label="${attributes.size}"]`).click();
+        }
+
+        if (attributes.color) {
+            await this.page.locator(`[option-label="${attributes.color}"]`).click();
+        }
     }
 
     async setQuantity(qty: number) {
@@ -39,7 +46,7 @@ export class ProductPage extends BasePage {
         await this.addToCartButton.click();
     }
 
-    async expectSuccessMessagetoBeVisible() {
+    async expectSuccessMessageToBeVisible() {
         await expect(this.successMessage).toBeVisible();
     }
 
