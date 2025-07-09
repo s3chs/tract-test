@@ -4,8 +4,8 @@
 
 This project includes the development and implementation of three end-to-end test scenarios using **Playwright with TypeScript**, along with additional edge cases, architectural choices, and stability improvements.
 
-In order to run the tests, please use the "npx playwright test --headed" command has written in the scripts ! 
-I focused on Chromium but feel free to play with the workers and launch it with Mozilla also
+In order to run the tests, please use the "npx playwright test --headed" command as written in the scripts ! 
+I focused on Chromium but feel free to play with the workers and launch it with Firefox also
 ---
 
 ## 🛠️ Technology Stack
