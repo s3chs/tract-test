@@ -116,12 +116,4 @@ This project demonstrates:
 
 I'm looking forward to discussing this work further. Thanks again for the opportunity!
 
----
-
-## 📄 Want a different format?
-
-Let me know if you’d like this documentation exported as:
-- A formatted **PDF**
-- A **Markdown** file
-- Embedded directly into a generated test report
 
