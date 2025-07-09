@@ -1,58 +1,61 @@
-import {test} from '@playwright/test';
-import {CategoryPage} from '../pages/CategoryPage';
-import {ProductPage} from "../pages/ProductPage";
-import {CheckoutPage} from "../pages/CheckoutPage";
-import {validCustomerNetherlands} from "../data/customerData";
-import {scenario3} from "../data/productScenarios";
+import { test } from '@playwright/test';
+import { CategoryPage } from '../pages/CategoryPage';
+import { ProductPage } from "../pages/ProductPage";
+import { CheckoutPage } from "../pages/CheckoutPage";
+import { validCustomerNetherlands } from "../data/customerData";
+import { scenario3 } from "../data/productScenarios";
 
-test('Scenario 3 – Gear > Bags > Activity > Yoga', async ({ page }) => {
+test.describe('End-to-end purchase flow from category to checkout', () => {
 
-    // Instantiate the CategoryPage with the direct category URL path
-    const categoryPage = new CategoryPage(page, scenario3.categoryPath);
+    test('should filter yoga bags, add a random product to cart, and complete checkout with discount', async ({ page }) => {
 
-    // Navigate directly to the category page
-    await categoryPage.goTo();
+        // Instantiate the CategoryPage with the direct category URL path
+        const categoryPage = new CategoryPage(page, scenario3.categoryPath);
 
-    // Handle the consent popup if it appears
-    await categoryPage.handlePopupIfPresent();
+        // Navigate directly to the category page
+        await categoryPage.goTo();
 
-    // Apply filters
-    await categoryPage.applyFilters(scenario3.filters);
-    await categoryPage.expectUrlToContainParams(scenario3.expectedUrlParams);
+        // Handle the consent popup if it appears
+        await categoryPage.handlePopupIfPresent();
 
-    // Select the first visible product on the category page
-    await categoryPage.selectRandomVisibleProduct();
+        // Apply filters
+        await categoryPage.applyFilters(scenario3.filters);
+        await categoryPage.expectUrlToContainParams(scenario3.expectedUrlParams);
 
-    // Instantiate the ProductPage now that we are on the product detail page
-    const productPage = new ProductPage(page);
+        // Select a random visible product on the category page
+        await categoryPage.selectRandomVisibleProduct();
 
-    // Add the product to the cart
-    await productPage.addToCart();
+        // Instantiate the ProductPage now that we are on the product detail page
+        const productPage = new ProductPage(page);
 
-    // Verify the success message is visible after adding to cart
-    await productPage.expectSuccessMessageToBeVisible();
+        // Add the product to the cart
+        await productPage.addToCart();
 
-    // Navigate to the checkout page
-    await productPage.navigateToCheckoutPage();
+        // Verify the success message is visible after adding to cart
+        await productPage.expectSuccessMessageToBeVisible();
 
-    // Instantiate the CheckoutPage now that we are on the checkout page
-    const checkoutPage = new CheckoutPage(page);
+        // Navigate to the checkout page
+        await productPage.navigateToCheckoutPage();
 
-    // Fill in the checkout form with valid customer data
-    await checkoutPage.fillCustomerInformation(validCustomerNetherlands);
+        // Instantiate the CheckoutPage now that we are on the checkout page
+        const checkoutPage = new CheckoutPage(page);
 
-    // Wait for any loading indicators to appear and then disappear
-    await checkoutPage.waitForLoaderToAppearAndDisappear();
+        // Fill in the checkout form with valid customer data
+        await checkoutPage.fillCustomerInformation(validCustomerNetherlands);
 
-    // Click the 'Next' button to proceed in the checkout flow
-    await checkoutPage.clickNextButton();
+        // Wait for any loading indicators to appear and then disappear
+        await checkoutPage.waitForLoaderToAppearAndDisappear();
 
-    // Apply a coupon code to the order
-    await checkoutPage.applyDiscountCode(scenario3.coupon);
+        // Click the 'Next' button to proceed in the checkout flow
+        await checkoutPage.clickNextButton();
 
-    // Verify that a 20% discount is applied
-    await checkoutPage.expectDiscountToBeApplied(20);
+        // Apply a coupon code to the order
+        await checkoutPage.applyDiscountCode(scenario3.coupon);
 
-    // Verify that the total price reflects the discount correctly
-    await checkoutPage.expectTotalToBeCorrect();
+        // Verify that a 20% discount is applied
+        await checkoutPage.expectDiscountToBeApplied(20);
+
+        // Verify that the total price reflects the discount correctly
+        await checkoutPage.expectTotalToBeCorrect();
+    });
 });
