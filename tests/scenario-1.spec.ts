@@ -5,7 +5,7 @@ import { CheckoutPage } from '../pages/CheckoutPage';
 import { validCustomerNetherlands } from '../data/customerData';
 import { scenario1 } from '../data/productScenarios';
 
-test.describe('End-to-end purchase flow from category to checkout', () => {
+test.describe('Scenario 1 - End-to-end purchase flow from category to checkout', () => {
 
     test('should allow a user to filter jackets, select a size/color, go to checkout and apply discount', async ({ page }) => {
 

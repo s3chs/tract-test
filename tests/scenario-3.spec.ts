@@ -5,9 +5,9 @@ import { CheckoutPage } from "../pages/CheckoutPage";
 import { validCustomerNetherlands } from "../data/customerData";
 import { scenario3 } from "../data/productScenarios";
 
-test.describe('End-to-end purchase flow from category to checkout', () => {
+test.describe('Scenario - 3 End-to-end purchase flow from category to checkout', () => {
 
-    test('should filter yoga bags, add a random product to cart, and complete checkout with discount', async ({ page }) => {
+    test('should filter yoga bags, add a random product to cart, and apply discount on checkout', async ({ page }) => {
 
         // Instantiate the CategoryPage with the direct category URL path
         const categoryPage = new CategoryPage(page, scenario3.categoryPath);
