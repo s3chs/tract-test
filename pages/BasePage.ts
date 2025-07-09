@@ -4,6 +4,7 @@ import {Page} from '@playwright/test';
 export class BasePage {
     protected page: Page;
     readonly baseURL: string;
+    private googleAdWatcherRunning = false;
 
     constructor(page: Page) {
         this.page = page;
@@ -55,6 +56,33 @@ export class BasePage {
             } catch (err) {
             }
         }
+    }
+
+    startGoogleAdWatcher(interval = 2000, maxAttempts = 100) {
+        if (this.googleAdWatcherRunning) return;
+
+        this.googleAdWatcherRunning = true;
+        let attempts = 0;
+
+        const loop = async () => {
+            while (this.googleAdWatcherRunning && attempts < maxAttempts) {
+                await this.dismissGoogleAdIfPresent();
+                try {
+                    await this.page.waitForTimeout(interval);
+                } catch (error) {
+                    console.warn('Erreur dans waitForTimeout:', error);
+                }
+                attempts++;
+            }
+
+            console.log('🛑 Fin de la surveillance des pubs Google');
+        };
+
+        loop();
+    }
+
+    stopGoogleAdWatcher() {
+        this.googleAdWatcherRunning = false;
     }
 
 }

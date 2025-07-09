@@ -13,6 +13,9 @@ test.describe('Scenario 2 - End-to-end purchase flow from category to checkout',
         // Instantiate the CategoryPage with the direct category URL path
         const categoryPage = new CategoryPage(page, scenario2.categoryPath);
 
+        // Instantiate Google ad watcher
+        categoryPage.startGoogleAdWatcher();
+
         // Navigate directly to the category page
         await categoryPage.goTo();
 
@@ -25,6 +28,9 @@ test.describe('Scenario 2 - End-to-end purchase flow from category to checkout',
 
         // Select a product on the category page by its name
         await categoryPage.selectProductByName(scenario2.productName);
+
+        // Kill the Google ad watcher
+        categoryPage.stopGoogleAdWatcher();
 
         // Instantiate the ProductPage now that we are on the product detail page
         const productPage = new ProductPage(page);

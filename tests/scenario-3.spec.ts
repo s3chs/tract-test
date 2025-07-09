@@ -12,6 +12,9 @@ test.describe('Scenario 3 - End-to-end purchase flow from category to checkout',
         // Instantiate the CategoryPage with the direct category URL path
         const categoryPage = new CategoryPage(page, scenario3.categoryPath);
 
+        // Instantiate Google ad watcher
+        categoryPage.startGoogleAdWatcher();
+
         // Navigate directly to the category page
         await categoryPage.goTo();
 
@@ -24,6 +27,9 @@ test.describe('Scenario 3 - End-to-end purchase flow from category to checkout',
 
         // Select a random visible product on the category page
         await categoryPage.selectRandomVisibleProduct();
+
+        // Kill the Google ad watcher
+        categoryPage.stopGoogleAdWatcher();
 
         // Instantiate the ProductPage now that we are on the product detail page
         const productPage = new ProductPage(page);
@@ -54,5 +60,8 @@ test.describe('Scenario 3 - End-to-end purchase flow from category to checkout',
 
         // Verify that the total price reflects the discount correctly
         await checkoutPage.expectTotalToBeCorrect();
+
+        // Kill the Google ad watcher
+        await categoryPage.stopGoogleAdWatcher();
     });
 });

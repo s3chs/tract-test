@@ -129,9 +129,17 @@ export class CategoryPage extends BasePage {
     }
 
     async expectUrlToContainParams(params: string[]) {
-        const url = this.page.url();
+        await expect.poll(async () => {
+            const url = this.page.url();
+            return params.every(param => url.includes(param));
+        }, {
+            timeout: 5000,
+            intervals: [500]
+        }).toBe(true);
+
+        const finalUrl = this.page.url();
         for (const param of params) {
-            expect(url).toContain(param);
+            expect(finalUrl).toContain(param);
         }
     }
 
@@ -140,12 +148,16 @@ export class CategoryPage extends BasePage {
         await productLink.click();
     }
 
+
     async selectRandomVisibleProduct() {
         const productItems = this.page.locator('.product-item');
+
+        await expect(productItems.first()).toBeVisible({timeout: 5000});
+
         const count = await productItems.count();
 
         if (count === 0) {
-            throw new Error('Aucun produit trouvé sur la page, Ducon ne peut rien cliquer.');
+            throw new Error('No products are available on the page');
         }
 
         const randomIndex = Math.floor(Math.random() * count);
@@ -154,6 +166,4 @@ export class CategoryPage extends BasePage {
         await expect(randomProduct).toBeVisible({timeout: 5000});
         await randomProduct.click();
     }
-
-
 }
