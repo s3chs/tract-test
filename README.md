@@ -6,6 +6,7 @@ This project includes the development and implementation of three end-to-end tes
 
 In order to run the tests, please use the "npx playwright test --headed" command as written in the scripts ! 
 I focused on the use of the Chromium browser for this exercice.
+Concerning the env, i created a fake env file in the data folder that would serve as containing the BASE_URL of the project.
 ---
 
 ## 🛠️ Technology Stack
