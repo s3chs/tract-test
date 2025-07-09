@@ -60,8 +60,5 @@ test.describe('Scenario 3 - End-to-end purchase flow from category to checkout',
 
         // Verify that the total price reflects the discount correctly
         await checkoutPage.expectTotalToBeCorrect();
-
-        // Kill the Google ad watcher
-        await categoryPage.stopGoogleAdWatcher();
     });
 });
