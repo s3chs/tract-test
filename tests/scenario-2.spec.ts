@@ -8,7 +8,7 @@ import { scenario2 } from '../data/productScenarios';
 
 test.describe('End-to-end purchase flow from category to checkout', () => {
 
-    test('should handle required field errors, apply filters and complete checkout with discount', async ({ page }) => {
+    test('should handle required field errors, apply filters and complete checkout with discount applied on cart page', async ({ page }) => {
 
         // Instantiate the CategoryPage with the direct category URL path
         const categoryPage = new CategoryPage(page, scenario2.categoryPath);
