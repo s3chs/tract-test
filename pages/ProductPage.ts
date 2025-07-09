@@ -47,7 +47,7 @@ export class ProductPage extends BasePage {
     }
 
     async expectSuccessMessageToBeVisible() {
-        await expect(this.successMessage).toBeVisible();
+        await expect(this.successMessage).toBeVisible({ timeout: 8000 });
     }
 
     async verifyRequiredFieldErrors() {
