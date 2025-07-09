@@ -1,5 +1,5 @@
-import { expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import {expect} from '@playwright/test';
+import {BasePage} from './BasePage';
 
 export class CartPage extends BasePage {
 
@@ -22,7 +22,7 @@ export class CartPage extends BasePage {
     }
 
     get discountCodeMessage() {
-        return this.page.locator('span.title', { hasText: 'Discount (Get flat 20% off on all products)' });
+        return this.page.locator('span.title', {hasText: 'Discount (Get flat 20% off on all products)'});
     }
 
     // Actions

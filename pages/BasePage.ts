@@ -1,6 +1,5 @@
-import { BASE_URL } from '../config/env';
-import { Page } from '@playwright/test';
-import { FinalSection, MainSection, SubSection } from "../utils/MenuEnums";
+import {BASE_URL} from '../config/env';
+import {Page} from '@playwright/test';
 
 export class BasePage {
     protected page: Page;
@@ -13,54 +12,49 @@ export class BasePage {
 
     // Locators
 
-    get popupAcceptButton() { return this.page.locator('.fc-button:has-text("Consent")');
-    }
-
-    get mainMenuSection() {
-        return (section: string) => this.page.locator(`text=${section}`);
-    }
-
-    get cartSummaryButton() {
-        return this.page.locator('.minicart-wrapper');
-    }
-
-    get cartPageRedirectionButton() {
-        return this.page.locator('a.action.viewcart', { hasText: 'View and Edit Cart' });
-    }
-
-    get checkoutPageRedirectionButton() {
-        return this.page.locator('#top-cart-btn-checkout');
+    get popupAcceptButton() {
+        return this.page.locator('.fc-button:has-text("Consent")');
     }
 
     // Actions
-
-    async navigateToHomePage() {
-        await this.page.goto(this.baseURL);
-    }
-
-    async navigateToCheckoutPage() {
-        await this.page.goto(this.baseURL+"/checkout");
-    }
-    async navigateToCartPage() {
-        await this.page.goto(this.baseURL+"/checkout/cart");
-    }
-
-    async navigateToSection(mainSection: MainSection, subSection?: SubSection, finalSection?: FinalSection) {
-        await this.mainMenuSection(mainSection).hover();
-        if (subSection) await this.mainMenuSection(subSection).hover();
-        if (finalSection) await this.mainMenuSection(finalSection).click();
-    }
 
     async goTo(path = '') {
         const url = path.startsWith('/') ? `${this.baseURL}${path}` : `${this.baseURL}/${path}.html`;
         await this.page.goto(url);
     }
 
+    async navigateToCheckoutPage() {
+        await this.page.goto(this.baseURL + "/checkout");
+    }
+
+    async navigateToCartPage() {
+        await this.page.goto(this.baseURL + "/checkout/cart");
+    }
+
     async handlePopupIfPresent() {
         try {
-            await this.popupAcceptButton.waitFor({ timeout: 5000 });
+            await this.popupAcceptButton.waitFor({timeout: 5000});
             await this.popupAcceptButton.click();
         } catch (e) {
         }
     }
+
+    async dismissGoogleAdIfPresent() {
+        const frames = this.page.frames();
+        let adsClosed = 0;
+
+        for (const frame of frames) {
+            try {
+                const dismissButton = frame.locator('#dismiss-button');
+
+                if (await dismissButton.isVisible({timeout: 3000})) {
+                    await dismissButton.click({force: true});
+                    adsClosed++;
+                }
+
+            } catch (err) {
+            }
+        }
+    }
+
 }

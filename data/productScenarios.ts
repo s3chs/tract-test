@@ -1,4 +1,4 @@
-import { ProductScenario } from '../types/ProductTypes';
+import {ProductScenario} from '../types/Product';
 
 export const scenario1: ProductScenario = {
     categoryPath: 'men/tops-men/jackets-men',
@@ -6,14 +6,15 @@ export const scenario1: ProductScenario = {
         size: 'XS',
         color: 'Blue',
         price: '$40.00 - $49.99',
+        ecoCollection: 'Yes'
     },
     attributes: {
         size: 'XS',
         color: 'Blue',
     },
-    quantity: 2,
+    quantity: 1,
     coupon: '20poff',
-    expectedUrlParams: ['size=166', 'color=50', 'price=40-50']
+    expectedUrlParams: ['size=166', 'color=50', 'price=40-50', 'eco_collection=1']
 };
 
 export const scenario2: ProductScenario = {

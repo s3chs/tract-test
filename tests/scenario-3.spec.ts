@@ -1,13 +1,13 @@
-import { test } from '@playwright/test';
-import { CategoryPage } from '../pages/CategoryPage';
-import { ProductPage } from "../pages/ProductPage";
-import { CheckoutPage } from "../pages/CheckoutPage";
-import { validCustomerNetherlands } from "../data/customerData";
-import { scenario3 } from "../data/productScenarios";
+import {test} from '@playwright/test';
+import {CategoryPage} from '../pages/CategoryPage';
+import {ProductPage} from "../pages/ProductPage";
+import {CheckoutPage} from "../pages/CheckoutPage";
+import {validCustomerNetherlands} from "../data/customerData";
+import {scenario3} from "../data/productScenarios";
 
-test.describe('Scenario - 3 End-to-end purchase flow from category to checkout', () => {
+test.describe('Scenario 3 - End-to-end purchase flow from category to checkout', () => {
 
-    test('should filter yoga bags, add a random product to cart, and apply discount on checkout', async ({ page }) => {
+    test('should filter yoga bags, add a random product to cart, retry if the product is not available, and apply discount on checkout', async ({page}) => {
 
         // Instantiate the CategoryPage with the direct category URL path
         const categoryPage = new CategoryPage(page, scenario3.categoryPath);
@@ -29,10 +29,7 @@ test.describe('Scenario - 3 End-to-end purchase flow from category to checkout',
         const productPage = new ProductPage(page);
 
         // Add the product to the cart
-        await productPage.addToCart();
-
-        // Verify the success message is visible after adding to cart
-        await productPage.expectSuccessMessageToBeVisible();
+        await productPage.tryAddToCartWithRetry(categoryPage);
 
         // Navigate to the checkout page
         await productPage.navigateToCheckoutPage();

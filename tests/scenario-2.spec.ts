@@ -1,14 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { CategoryPage } from '../pages/CategoryPage';
-import { ProductPage } from '../pages/ProductPage';
-import { CartPage } from '../pages/CartPage';
-import { CheckoutPage } from '../pages/CheckoutPage';
-import { validCustomerNetherlands } from '../data/customerData';
-import { scenario2 } from '../data/productScenarios';
+import {test, expect} from '@playwright/test';
+import {CategoryPage} from '../pages/CategoryPage';
+import {ProductPage} from '../pages/ProductPage';
+import {CartPage} from '../pages/CartPage';
+import {CheckoutPage} from '../pages/CheckoutPage';
+import {validCustomerNetherlands} from '../data/customerData';
+import {scenario2} from '../data/productScenarios';
 
 test.describe('Scenario 2 - End-to-end purchase flow from category to checkout', () => {
 
-    test('should handle required field errors, apply filters, apply discount on cart page and go to checkout', async ({ page }) => {
+    test('should handle required field errors, apply filters, apply discount on cart page and go to checkout', async ({page}) => {
 
         // Instantiate the CategoryPage with the direct category URL path
         const categoryPage = new CategoryPage(page, scenario2.categoryPath);

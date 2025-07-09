@@ -1,6 +1,6 @@
 import {expect, Locator, Page} from '@playwright/test';
 import {BasePage} from './BasePage';
-import {ProductFilters} from "../types/ProductTypes";
+import {ProductFilters} from "../types/Product";
 
 export class CategoryPage extends BasePage {
     readonly categoryPath: string;
@@ -16,11 +16,11 @@ export class CategoryPage extends BasePage {
         return this.page.locator('.product-item').first();
     }
 
+    // Actions
+
     filterTab(filterName: string) {
         return this.page.locator('div.filter-options-title', {hasText: filterName});
     }
-
-    // Actions
 
     async goTo() {
         await super.goTo(this.categoryPath);

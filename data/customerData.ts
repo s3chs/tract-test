@@ -1,4 +1,4 @@
-import { CustomerInfo } from '../types/CustomerInfo';
+import {CustomerInfo} from '../types/CustomerInfo';
 
 export const validCustomerNetherlands: CustomerInfo = {
     email: 'jan.jansen@example.nl',
