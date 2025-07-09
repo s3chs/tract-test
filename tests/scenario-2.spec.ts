@@ -4,73 +4,77 @@ import { ProductPage } from '../pages/ProductPage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { validCustomerNetherlands } from '../data/customerData';
-import {scenario1, scenario2} from '../data/productScenarios';
+import { scenario2 } from '../data/productScenarios';
 
-test('Scenario 2 – Women > Tops > Jackets > Medium > Red', async ({page}) => {
+test.describe('End-to-end purchase flow from category to checkout', () => {
 
-    // Instantiate the CategoryPage with the direct category URL path
-    const categoryPage = new CategoryPage(page, scenario2.categoryPath);
+    test('should handle required field errors, apply filters and complete checkout with discount', async ({ page }) => {
 
-    // Navigate directly to the category page
-    await categoryPage.goTo();
+        // Instantiate the CategoryPage with the direct category URL path
+        const categoryPage = new CategoryPage(page, scenario2.categoryPath);
 
-    // Handle the consent popup if it appears
-    await categoryPage.handlePopupIfPresent();
+        // Navigate directly to the category page
+        await categoryPage.goTo();
 
-    // Apply filters
-    await categoryPage.applyFilters(scenario2.filters);
-    await categoryPage.expectUrlToContainParams(scenario2.expectedUrlParams);
+        // Handle the consent popup if it appears
+        await categoryPage.handlePopupIfPresent();
 
-    // Select a product on the category page by its name
-    await categoryPage.selectProductByName(scenario2.productName);
+        // Apply filters
+        await categoryPage.applyFilters(scenario2.filters);
+        await categoryPage.expectUrlToContainParams(scenario2.expectedUrlParams);
 
-    // Instantiate the ProductPage now that we are on the product detail page
-    const productPage = new ProductPage(page);
+        // Select a product on the category page by its name
+        await categoryPage.selectProductByName(scenario2.productName);
 
-    // Add the product directly to the cart to generate errors
-    await productPage.addToCart();
-    await productPage.verifyRequiredFieldErrors();
+        // Instantiate the ProductPage now that we are on the product detail page
+        const productPage = new ProductPage(page);
 
-    // Choose product options and add the product to the cart
-    await productPage.selectAttributes(scenario2.attributes);
-    await productPage.setQuantity(4);
-    await productPage.addToCart();
+        // Add the product directly to the cart to generate errors
+        await productPage.addToCart();
+        await productPage.verifyRequiredFieldErrors();
 
-    // Verify the success message is visible after adding to cart
-    await productPage.expectSuccessMessageToBeVisible();
+        // Choose product options and add the product to the cart
+        await productPage.selectAttributes(scenario2.attributes);
+        await productPage.setQuantity(4);
+        await productPage.addToCart();
 
-    // Go to cart page
-    await productPage.navigateToCartPage();
+        // Verify the success message is visible after adding to cart
+        await productPage.expectSuccessMessageToBeVisible();
 
-    // Instantiate the CartPage now that we are on the cart page
-    const cartPage = new CartPage(page);
+        // Go to cart page
+        await productPage.navigateToCartPage();
 
-    // Total order amount before applying coupon
-    const totalBeforeDiscount = await cartPage.getOrderTotal();
+        // Instantiate the CartPage now that we are on the cart page
+        const cartPage = new CartPage(page);
 
-    // Apply discount code
-    await cartPage.applyDiscount(scenario2.coupon);
+        // Total order amount before applying coupon
+        const totalBeforeDiscount = await cartPage.getOrderTotal();
 
-    // Verify if the discount is applied correctly based on the original total, and store the total amount
-    await cartPage.expectDiscountToBeApplied(20, totalBeforeDiscount);
-    const discountedTotal = await cartPage.getOrderTotal();
+        // Apply discount code
+        await cartPage.applyDiscount(scenario2.coupon);
 
-    // Navigate to the checkout page
-    await productPage.navigateToCheckoutPage();
+        // Verify if the discount is applied correctly based on the original total, and store the total amount
+        await cartPage.expectDiscountToBeApplied(20, totalBeforeDiscount);
+        const discountedTotal = await cartPage.getOrderTotal();
 
-    // Instantiate the CheckoutPage now that we are on the checkout page
-    const checkoutPage = new CheckoutPage(page);
+        // Navigate to the checkout page
+        await productPage.navigateToCheckoutPage();
 
-    // Fill in the checkout form with valid customer data
-    await checkoutPage.fillCustomerInformation(validCustomerNetherlands);
+        // Instantiate the CheckoutPage now that we are on the checkout page
+        const checkoutPage = new CheckoutPage(page);
 
-    // Wait for any loading indicators to appear and then disappear
-    await checkoutPage.waitForLoaderToAppearAndDisappear();
+        // Fill in the checkout form with valid customer data
+        await checkoutPage.fillCustomerInformation(validCustomerNetherlands);
 
-    // Click the 'Next' button to proceed in the checkout flow
-    await checkoutPage.clickNextButton();
+        // Wait for any loading indicators to appear and then disappear
+        await checkoutPage.waitForLoaderToAppearAndDisappear();
 
-    // Verify that the subtotal of the checkout page matches the total of the cart page without the shipping fee
-    const totalExcludingShippingFee = await checkoutPage.getOrderTotalWithoutShipping();
-    expect(discountedTotal).toBeCloseTo(totalExcludingShippingFee)
+        // Click the 'Next' button to proceed in the checkout flow
+        await checkoutPage.clickNextButton();
+
+        // Verify that the subtotal of the checkout page matches the total of the cart page without the shipping fee
+        const totalExcludingShippingFee = await checkoutPage.getOrderTotalWithoutShipping();
+        expect(discountedTotal).toBeCloseTo(totalExcludingShippingFee);
+    });
+
 });
