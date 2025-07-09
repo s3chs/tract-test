@@ -74,8 +74,6 @@ export class BasePage {
                 }
                 attempts++;
             }
-
-            console.log('🛑 Fin de la surveillance des pubs Google');
         };
 
         loop();
