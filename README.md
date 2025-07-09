@@ -36,7 +36,7 @@ All **locators**, **actions**, and **assertions** are encapsulated within each p
 
 ## ✅ Test Scenarios
 
-### 1. Men's Jackets – Full Checkout Flow
+### 1. Men's Jackets – Full Customer Flow
 
 #### Steps:
 1. Navigate to men’s jackets category
