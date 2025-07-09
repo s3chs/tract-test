@@ -70,7 +70,7 @@ export class BasePage {
                 try {
                     await this.page.waitForTimeout(interval);
                 } catch (error) {
-                    console.warn('Erreur dans waitForTimeout:', error);
+                    console.warn('Error in waitForTimeout:', error);
                 }
                 attempts++;
             }
